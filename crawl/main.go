@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"net/http"
+	"time"
 
 	"github.com/antchfx/htmlquery"
 	"github.com/nujikazo/plmn-list/crawl/config"
@@ -44,8 +45,8 @@ func Run(conf *config.GeneralConf) error {
 		countryCode := htmlquery.InnerText(td[4])
 		network := htmlquery.InnerText(td[5])
 
-		_, err := queries.CreatePlmn(
-			ctx, models.CreatePlmnParams{
+		_, err := queries.UpsertPlmn(
+			ctx, models.UpsertPlmnParams{
 				Mcc:     mcc,
 				Mnc:     mnc,
 				Iso:     iso,
@@ -54,7 +55,19 @@ func Run(conf *config.GeneralConf) error {
 					String: countryCode,
 					Valid:  true,
 				},
-				Network: network,
+				Network:   network,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+				Mcc_2:     mcc,
+				Mnc_2:     mnc,
+				Iso_2:     iso,
+				Country_2: country,
+				CountryCode_2: sql.NullString{
+					String: countryCode,
+					Valid:  true,
+				},
+				Network_2:   network,
+				UpdatedAt_2: time.Now(),
 			},
 		)
 		if err != nil {

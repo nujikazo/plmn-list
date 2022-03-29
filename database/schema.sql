@@ -6,5 +6,7 @@ CREATE TABLE plmn (
   country VARCHAR(128) NOT NULL,
   country_code VARCHAR(128),
   network VARCHAR(128) NOT NULL,
-  delete_flg TINYINT(1) NOT NULL DEFAULT 0
+	created_at DATETIME NOT NULL,
+	updated_at DATETIME NOT NULL,
+	UNIQUE plmn_list_idx (mcc, mnc)
 );

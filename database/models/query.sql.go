@@ -6,38 +6,11 @@ package models
 import (
 	"context"
 	"database/sql"
+	"time"
 )
-
-const createPlmn = `-- name: CreatePlmn :execresult
-INSERT INTO plmn (
-	mcc, mnc, iso, country, country_code, network
-) VALUES (
-  ?, ?, ?, ?, ?, ?
-)
-`
-
-type CreatePlmnParams struct {
-	Mcc         string
-	Mnc         string
-	Iso         string
-	Country     string
-	CountryCode sql.NullString
-	Network     string
-}
-
-func (q *Queries) CreatePlmn(ctx context.Context, arg CreatePlmnParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createPlmn,
-		arg.Mcc,
-		arg.Mnc,
-		arg.Iso,
-		arg.Country,
-		arg.CountryCode,
-		arg.Network,
-	)
-}
 
 const getPlmn = `-- name: GetPlmn :one
-SELECT id, mcc, mnc, iso, country, country_code, network, delete_flg FROM plmn
+SELECT id, mcc, mnc, iso, country, country_code, network, created_at, updated_at FROM plmn
 WHERE id = ? LIMIT 1
 `
 
@@ -52,13 +25,14 @@ func (q *Queries) GetPlmn(ctx context.Context, id int64) (Plmn, error) {
 		&i.Country,
 		&i.CountryCode,
 		&i.Network,
-		&i.DeleteFlg,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
 
 const listPlmn = `-- name: ListPlmn :many
-SELECT id, mcc, mnc, iso, country, country_code, network, delete_flg FROM plmn
+SELECT id, mcc, mnc, iso, country, country_code, network, created_at, updated_at FROM plmn
 `
 
 func (q *Queries) ListPlmn(ctx context.Context) ([]Plmn, error) {
@@ -78,7 +52,8 @@ func (q *Queries) ListPlmn(ctx context.Context) ([]Plmn, error) {
 			&i.Country,
 			&i.CountryCode,
 			&i.Network,
-			&i.DeleteFlg,
+			&i.CreatedAt,
+			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -91,4 +66,65 @@ func (q *Queries) ListPlmn(ctx context.Context) ([]Plmn, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const upsertPlmn = `-- name: UpsertPlmn :execresult
+INSERT INTO plmn (
+	mcc,
+  mnc,
+  iso,
+  country,
+  country_code,
+  network,
+  created_at,
+  updated_at
+) VALUES (
+  ?, ?, ?, ?, ?, ?, ?, ?
+) ON DUPLICATE KEY
+  UPDATE
+	mcc = ?,
+  mnc = ?,
+  iso = ?,
+  country = ?,
+  country_code = ?,
+  network = ?,
+  updated_at = ?
+`
+
+type UpsertPlmnParams struct {
+	Mcc           string
+	Mnc           string
+	Iso           string
+	Country       string
+	CountryCode   sql.NullString
+	Network       string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	Mcc_2         string
+	Mnc_2         string
+	Iso_2         string
+	Country_2     string
+	CountryCode_2 sql.NullString
+	Network_2     string
+	UpdatedAt_2   time.Time
+}
+
+func (q *Queries) UpsertPlmn(ctx context.Context, arg UpsertPlmnParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, upsertPlmn,
+		arg.Mcc,
+		arg.Mnc,
+		arg.Iso,
+		arg.Country,
+		arg.CountryCode,
+		arg.Network,
+		arg.CreatedAt,
+		arg.UpdatedAt,
+		arg.Mcc_2,
+		arg.Mnc_2,
+		arg.Iso_2,
+		arg.Country_2,
+		arg.CountryCode_2,
+		arg.Network_2,
+		arg.UpdatedAt_2,
+	)
 }

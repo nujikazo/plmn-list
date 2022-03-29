@@ -4,6 +4,7 @@ package models
 
 import (
 	"database/sql"
+	"time"
 )
 
 type Plmn struct {
@@ -14,5 +15,6 @@ type Plmn struct {
 	Country     string
 	CountryCode sql.NullString
 	Network     string
-	DeleteFlg   bool
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
