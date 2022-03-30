@@ -10,6 +10,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// New
 func New(conf *config.GeneralConf) (*models.Queries, error) {
 	target := fmt.Sprintf("%s:%s@%s/%s?charset=%s&parseTime=%t",
 		conf.DatabaseUser,

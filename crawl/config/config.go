@@ -8,6 +8,7 @@ import (
 )
 
 type GeneralConf struct {
+	Env              string `yaml:"env"`
 	DatabaseHost     string `yaml:"databaseHost"`
 	DatabaseUser     string `yaml:"databaseUser"`
 	DatabasePassword string `yaml:"databasePassword"`
@@ -31,10 +32,10 @@ func ReadGeneralConf(path string) *GeneralConf {
 	return gc
 }
 
-type PlmnScrapeConf struct{}
+type PlmnCrawlConf struct{}
 
-func ReadPlmnScrapeConf(path string) *PlmnScrapeConf {
-	pc := &PlmnScrapeConf{}
+func ReadPlmnCrawlConf(path string) *PlmnCrawlConf {
+	pc := &PlmnCrawlConf{}
 	c, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)

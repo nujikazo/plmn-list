@@ -1,8 +1,10 @@
 package crawl
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
+	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -12,29 +14,55 @@ import (
 	"github.com/nujikazo/plmn-list/database/models"
 )
 
+type plmn struct {
+	MCC         string
+	MNC         string
+	ISO         string
+	Country     string
+	CountryCode string
+	Network     string
+}
+
 const plmnListURL = "https://www.mcc-mnc.com/"
 
 // Run
-func Run(conf *config.GeneralConf) error {
-	ctx := context.Background()
+func Run(generalConf *config.GeneralConf, crawlerConf *config.PlmnCrawlConf) error {
+	var res []byte
+	var err error
 
-	resp, err := http.Get(plmnListURL)
-	if err != nil {
-		return err
+	switch generalConf.Env {
+	case "remote":
+		resp, err := http.Get(plmnListURL)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+
+		res, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+	case "local":
+		res, err = ioutil.ReadFile("")
+		if err != nil {
+			return err
+		}
 	}
-	defer resp.Body.Close()
 
-	doc, err := htmlquery.Parse(resp.Body)
+	doc, err := htmlquery.Parse(bytes.NewReader(res))
 	if err != nil {
 		return err
 	}
 
 	tr := htmlquery.Find(doc, `//div[@id="main"]/div[@class="content"]/table[@id="mncmccTable"]/tbody/tr`)
 
-	queries, err := db.New(conf)
+	queries, err := db.New(generalConf)
 	if err != nil {
 		return err
 	}
+
+	ctx := context.Background()
+	var plmns []plmn
 
 	for _, t := range tr {
 		td := htmlquery.Find(t, `//td`)
@@ -45,7 +73,18 @@ func Run(conf *config.GeneralConf) error {
 		countryCode := htmlquery.InnerText(td[4])
 		network := htmlquery.InnerText(td[5])
 
-		_, err := queries.UpsertPlmn(
+		p := plmn{
+			MCC:         mcc,
+			MNC:         mnc,
+			ISO:         iso,
+			Country:     country,
+			CountryCode: countryCode,
+			Network:     network,
+		}
+
+		plmns = append(plmns, p)
+
+		if _, err := queries.UpsertPlmn(
 			ctx, models.UpsertPlmnParams{
 				Mcc:     mcc,
 				Mnc:     mnc,
@@ -69,8 +108,7 @@ func Run(conf *config.GeneralConf) error {
 				Network_2:   network,
 				UpdatedAt_2: time.Now(),
 			},
-		)
-		if err != nil {
+		); err != nil {
 			return err
 		}
 	}
