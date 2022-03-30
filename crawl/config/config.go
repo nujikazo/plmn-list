@@ -32,7 +32,15 @@ func ReadGeneralConf(path string) *GeneralConf {
 	return gc
 }
 
-type PlmnCrawlConf struct{}
+type PlmnCrawlConf struct {
+	Plmn struct {
+		URL  string `yaml:"url"`
+		Path struct {
+			Tr string `yaml:"tr"`
+			Td string `yaml:"td"`
+		} `yaml:"path"`
+	} `yaml:"plmn"`
+}
 
 func ReadPlmnCrawlConf(path string) *PlmnCrawlConf {
 	pc := &PlmnCrawlConf{}

@@ -23,8 +23,6 @@ type plmn struct {
 	Network     string
 }
 
-const plmnListURL = "https://www.mcc-mnc.com/"
-
 // Run
 func Run(generalConf *config.GeneralConf, crawlerConf *config.PlmnCrawlConf) error {
 	var res []byte
@@ -32,6 +30,7 @@ func Run(generalConf *config.GeneralConf, crawlerConf *config.PlmnCrawlConf) err
 
 	switch generalConf.Env {
 	case "remote":
+		plmnListURL := crawlerConf.Plmn.URL
 		resp, err := http.Get(plmnListURL)
 		if err != nil {
 			return err
@@ -54,7 +53,7 @@ func Run(generalConf *config.GeneralConf, crawlerConf *config.PlmnCrawlConf) err
 		return err
 	}
 
-	tr := htmlquery.Find(doc, `//div[@id="main"]/div[@class="content"]/table[@id="mncmccTable"]/tbody/tr`)
+	tr := htmlquery.Find(doc, crawlerConf.Plmn.Path.Tr)
 
 	queries, err := db.New(generalConf)
 	if err != nil {
@@ -65,7 +64,7 @@ func Run(generalConf *config.GeneralConf, crawlerConf *config.PlmnCrawlConf) err
 	var plmns []plmn
 
 	for _, t := range tr {
-		td := htmlquery.Find(t, `//td`)
+		td := htmlquery.Find(t, crawlerConf.Plmn.Path.Td)
 		mcc := htmlquery.InnerText(td[0])
 		mnc := htmlquery.InnerText(td[1])
 		iso := htmlquery.InnerText(td[2])

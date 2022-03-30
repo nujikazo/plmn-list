@@ -1,0 +1,5 @@
+plmn:
+  url: "https://www.mcc-mnc.com/"
+  path:
+    tr: '//div[@id="main"]/div[@class="content"]/table[@id="mncmccTable"]/tbody/tr'
+    td: '//td'
