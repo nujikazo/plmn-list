@@ -25,10 +25,11 @@ type plmn struct {
 
 // Run
 func Run(generalConf *config.GeneralConf, crawlerConf *config.PlmnCrawlConf) error {
+	env := generalConf.Env
 	var res []byte
 	var err error
 
-	switch generalConf.Env {
+	switch env {
 	case "remote":
 		plmnListURL := crawlerConf.Plmn.URL
 		resp, err := http.Get(plmnListURL)
