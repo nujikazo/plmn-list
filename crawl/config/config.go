@@ -34,8 +34,9 @@ func ReadGeneralConf(path string) *GeneralConf {
 
 type PlmnCrawlConf struct {
 	Plmn struct {
-		URL  string `yaml:"url"`
-		Path struct {
+		URL       string `yaml:"url"`
+		LocalFile string `yaml:"localFile"`
+		Path      struct {
 			Tr string `yaml:"tr"`
 			Td string `yaml:"td"`
 		} `yaml:"path"`
