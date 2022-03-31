@@ -28,8 +28,6 @@ func New(conf *config.GeneralConf) (*DB, error) {
 		}
 	}
 
-	os.Remove(target)
-
 	db, err := sql.Open(conf.DatabaseType, target)
 	if err != nil {
 		return nil, err
