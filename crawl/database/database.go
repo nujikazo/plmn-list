@@ -34,8 +34,8 @@ func New(conf *config.GeneralConf) (*DB, error) {
 	}
 
 	stmt := `
-	create table plmn (mcc text, mnc text, iso text, country text, country_code text, network text);
-	delete from plmn;
+	CREATE TABLE plmn (mcc text, mnc text, iso text, country text, country_code text, network text);
+	DELETE FROM plmn;
 	`
 	_, err = db.Exec(stmt)
 	if err != nil {
@@ -87,7 +87,7 @@ func (d *DB) createBulkInsertQuery(list []crawl.Plmn, start int) (query string, 
 	}
 
 	query = fmt.Sprintf(
-		"insert into plmn(mcc, mnc, iso, country, country_code, network) values %s",
+		"INSERT INTO plmn(mcc, mnc, iso, country, country_code, network) VALUES %s",
 		strings.Join(values, ", "),
 	)
 	return
