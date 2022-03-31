@@ -1,5 +1,6 @@
 plmn:
-  url: "https://www.mcc-mnc.com/"
+  env: 'remote'
+  url: 'https://www.mcc-mnc.com/'
   localFile: ''
   path:
     tr: '//div[@id="main"]/div[@class="content"]/table[@id="mncmccTable"]/tbody/tr'

@@ -20,7 +20,7 @@ type Plmn struct {
 
 // Run
 func Run(generalConf *config.GeneralConf, crawlerConf *config.PlmnCrawlConf) ([]Plmn, error) {
-	env := generalConf.Env
+	env := crawlerConf.Plmn.Env
 	var res []byte
 	var err error
 

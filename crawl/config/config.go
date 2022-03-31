@@ -8,7 +8,6 @@ import (
 )
 
 type GeneralConf struct {
-	Env              string `yaml:"env"`
 	DatabaseHost     string `yaml:"databaseHost"`
 	DatabaseUser     string `yaml:"databaseUser"`
 	DatabasePassword string `yaml:"databasePassword"`
@@ -34,6 +33,7 @@ func ReadGeneralConf(path string) *GeneralConf {
 
 type PlmnCrawlConf struct {
 	Plmn struct {
+		Env       string `yaml:"env"`
 		URL       string `yaml:"url"`
 		LocalFile string `yaml:"localFile"`
 		Path      struct {

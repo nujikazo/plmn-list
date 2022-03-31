@@ -1,3 +1,2 @@
-env: 'remote'
 databaseType: 'sqlite3'
 databaseName: '/tmp/plmn.db'
