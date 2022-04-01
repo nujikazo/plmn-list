@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/nujikazo/plmn-list/crawl"
 	"github.com/nujikazo/plmn-list/crawl/config"
 	"github.com/nujikazo/plmn-list/crawl/database"
+	"github.com/nujikazo/plmn-list/crawl/scrape"
 )
 
 func main() {
@@ -23,12 +23,22 @@ func run(generalConf *config.GeneralConf, crawlerConf *config.PlmnCrawlConf) err
 		return err
 	}
 
-	list, err := crawl.Run(generalConf, crawlerConf)
+	list, err := scrape.Run(generalConf, crawlerConf)
 	if err != nil {
 		return err
 	}
 
-	if err := db.Insert(list); err != nil {
+	db.Schemas = make([]database.Schema, len(list))
+	for i, v := range list {
+		db.Schemas[i].MCC = v.MCC
+		db.Schemas[i].MNC = v.MNC
+		db.Schemas[i].ISO = v.ISO
+		db.Schemas[i].Country = v.Country
+		db.Schemas[i].CountryCode = v.CountryCode
+		db.Schemas[i].Network = v.Network
+	}
+
+	if err := db.Insert(); err != nil {
 		return err
 	}
 
