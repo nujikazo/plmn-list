@@ -28,7 +28,7 @@ func run(generalConf *config.GeneralConf, crawlerConf *config.PlmnCrawlConf) err
 		return err
 	}
 
-	if err := db.Upsert(list); err != nil {
+	if err := db.Insert(list); err != nil {
 		return err
 	}
 

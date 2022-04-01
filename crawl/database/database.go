@@ -45,8 +45,8 @@ func New(conf *config.GeneralConf) (*DB, error) {
 	return &DB{db}, nil
 }
 
-// Upsert
-func (d *DB) Upsert(list []crawl.Plmn) error {
+// Insert
+func (d *DB) Insert(list []crawl.Plmn) error {
 	tx, err := d.Begin()
 	if err != nil {
 		return err
