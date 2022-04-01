@@ -12,6 +12,16 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+const (
+	plmn        = "plmn"
+	mcc         = "mcc"
+	mnc         = "mnc"
+	iso         = "iso"
+	country     = "country"
+	countryCode = "country_code"
+	network     = "network"
+)
+
 type DB struct {
 	*sql.DB
 }
@@ -33,10 +43,13 @@ func New(conf *config.GeneralConf) (*DB, error) {
 		return nil, err
 	}
 
-	stmt := `
-	CREATE TABLE plmn (mcc text, mnc text, iso text, country text, country_code text, network text);
-	DELETE FROM plmn;
-	`
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
+	stmt := fmt.Sprintf("CREATE TABLE %s (%s text, %s text, %s text, %s text, %s text, %s text); DELETE FROM %s;",
+		plmn, mcc, mnc, iso, country, countryCode, network, plmn)
+
 	_, err = db.Exec(stmt)
 	if err != nil {
 		return nil, err
@@ -87,7 +100,8 @@ func (d *DB) createBulkInsertQuery(list []crawl.Plmn, start int) (query string, 
 	}
 
 	query = fmt.Sprintf(
-		"INSERT INTO plmn(mcc, mnc, iso, country, country_code, network) VALUES %s",
+		"INSERT INTO %s(%s, %s, %s, %s, %s, %s) VALUES %s",
+		plmn, mcc, mnc, iso, country, countryCode, network,
 		strings.Join(values, ", "),
 	)
 	return
