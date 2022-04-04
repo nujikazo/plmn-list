@@ -15,12 +15,12 @@ import (
 	"google.golang.org/grpc"
 )
 
-// server is used to implement helloworld.GreeterServer.
+// server
 type server struct {
 	DB *database.Database
 }
 
-// SayHello implements helloworld.GreeterServer
+// ListPlmn
 func (s *server) ListPlmn(ctx context.Context, in *pb.ListPlmnRequest) (*pb.ListPlmnsResponses, error) {
 	result, err := s.DB.GetPlmnList()
 	if err != nil {
