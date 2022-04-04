@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package plmn;
+
+option go_package = "proto/";
+
+service PlmnService {
+  rpc ListPlmn (ListPlmnRequest) returns (ListPlmnsResponses) {}
+}
+
+message ListPlmnRequest {
+}
+
+message Plmn {
+    string mcc = 1;
+    string mnc = 2;
+    string iso = 3;
+    string country = 4;
+    string country_code = 5;
+    string network = 6;
+}
+
+message ListPlmnsResponses {
+    repeated Plmn plmn = 1;
+}
