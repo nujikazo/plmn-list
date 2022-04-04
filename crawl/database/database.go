@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nujikazo/plmn-list/crawl/config"
+	"github.com/nujikazo/plmn-list/general"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -36,7 +36,7 @@ type Schema struct {
 }
 
 // New
-func New(conf *config.GeneralConf) (*Database, error) {
+func New(conf *general.GeneralConf) (*Database, error) {
 	target := fmt.Sprintf("%s", conf.DatabaseName)
 
 	_, err := os.Stat(target)

@@ -7,17 +7,18 @@ import (
 	"github.com/nujikazo/plmn-list/crawl/config"
 	"github.com/nujikazo/plmn-list/crawl/database"
 	"github.com/nujikazo/plmn-list/crawl/scrape"
+	"github.com/nujikazo/plmn-list/general"
 )
 
 func main() {
-	generalConf := config.ReadGeneralConf(os.Getenv("GENERAL_CONF"))
+	generalConf := general.ReadGeneralConf(os.Getenv("GENERAL_CONF"))
 	crawlerConf := config.ReadPlmnCrawlConf(os.Getenv("CRAWLER_CONF"))
 	if err := run(generalConf, crawlerConf); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func run(generalConf *config.GeneralConf, crawlerConf *config.PlmnCrawlConf) error {
+func run(generalConf *general.GeneralConf, crawlerConf *config.PlmnCrawlConf) error {
 	db, err := database.New(generalConf)
 	if err != nil {
 		return err

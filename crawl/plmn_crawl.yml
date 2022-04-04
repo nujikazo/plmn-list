@@ -1,7 +1,0 @@
-plmn:
-  env: 'remote'
-  url: 'https://www.mcc-mnc.com/'
-  localFile: 'testdata/plmn.html'
-  path:
-    tr: '//div[@id="main"]/div[@class="content"]/table[@id="mncmccTable"]/tbody/tr'
-    td: '//td'

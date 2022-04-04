@@ -7,6 +7,7 @@ import (
 
 	"github.com/antchfx/htmlquery"
 	"github.com/nujikazo/plmn-list/crawl/config"
+	"github.com/nujikazo/plmn-list/general"
 )
 
 type Plmn struct {
@@ -19,7 +20,7 @@ type Plmn struct {
 }
 
 // Run
-func Run(generalConf *config.GeneralConf, crawlerConf *config.PlmnCrawlConf) ([]Plmn, error) {
+func Run(generalConf *general.GeneralConf, crawlerConf *config.PlmnCrawlConf) ([]Plmn, error) {
 	env := crawlerConf.Plmn.Env
 	var res []byte
 	var err error
