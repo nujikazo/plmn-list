@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/nujikazo/plmn-list/general"
@@ -11,19 +10,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const (
-	table       = "plmn"
-	mcc         = "mcc"
-	mnc         = "mnc"
-	iso         = "iso"
-	country     = "country"
-	countryCode = "country_code"
-	network     = "network"
-)
-
 type Database struct {
 	*sql.DB
 	Schemas []Schema
+	Name    string
 }
 
 type Schema struct {
@@ -39,14 +29,6 @@ type Schema struct {
 func New(conf *general.GeneralConf) (*Database, error) {
 	target := fmt.Sprintf("%s", conf.DatabaseName)
 
-	_, err := os.Stat(target)
-
-	if !os.IsNotExist(err) {
-		if err := os.Remove(target); err != nil {
-			return nil, err
-		}
-	}
-
 	db, err := sql.Open(conf.DatabaseType, target)
 	if err != nil {
 		return nil, err
@@ -56,19 +38,63 @@ func New(conf *general.GeneralConf) (*Database, error) {
 		return nil, err
 	}
 
-	stmt := fmt.Sprintf("CREATE TABLE %s (%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT); DELETE FROM %s;",
-		table, mcc, mnc, iso, country, countryCode, network, table)
-
-	_, err = db.Exec(stmt)
-	if err != nil {
-		return nil, err
-	}
-
 	var schema []Schema
 	return &Database{
 		db,
 		schema,
+		target,
 	}, nil
+}
+
+// InitializeDB
+func (db *Database) InitializeDB() error {
+	stmt := fmt.Sprintf("CREATE TABLE %s (%s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT); DELETE FROM %s;",
+		general.Table,
+		general.Mcc,
+		general.Mnc,
+		general.Iso,
+		general.Country,
+		general.CountryCode,
+		general.Network,
+		general.Table,
+	)
+
+	_, err := db.Exec(stmt)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetPlmnList
+func (db *Database) GetPlmnList() ([]Schema, error) {
+	stmt := fmt.Sprintf("SELECT * FROM %s;", general.Table)
+	rows, err := db.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var list []Schema
+
+	for rows.Next() {
+		var plmn Schema
+		if err := rows.Scan(
+			&plmn.MCC,
+			&plmn.MNC,
+			&plmn.ISO,
+			&plmn.Country,
+			&plmn.CountryCode,
+			&plmn.Network,
+		); err != nil {
+			return nil, err
+		}
+
+		list = append(list, plmn)
+	}
+
+	return list, nil
 }
 
 // Insert
@@ -115,7 +141,13 @@ func (db *Database) createBulkInsertQuery(start int) (string, []interface{}) {
 
 	query := fmt.Sprintf(
 		"INSERT INTO %s(%s, %s, %s, %s, %s, %s) VALUES %s",
-		table, mcc, mnc, iso, country, countryCode, network,
+		general.Table,
+		general.Mcc,
+		general.Mnc,
+		general.Iso,
+		general.Country,
+		general.CountryCode,
+		general.Network,
 		strings.Join(values, ", "),
 	)
 

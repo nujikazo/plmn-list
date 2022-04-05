@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/nujikazo/plmn-list/crawl/config"
-	"github.com/nujikazo/plmn-list/crawl/database"
 	"github.com/nujikazo/plmn-list/crawl/scrape"
+	"github.com/nujikazo/plmn-list/database"
 	"github.com/nujikazo/plmn-list/general"
 )
 
@@ -19,8 +19,19 @@ func main() {
 }
 
 func run(generalConf *general.GeneralConf, crawlerConf *config.PlmnCrawlConf) error {
+	_, err := os.Stat(generalConf.DatabaseName)
+	if !os.IsNotExist(err) {
+		if err := os.Remove(generalConf.DatabaseName); err != nil {
+			return err
+		}
+	}
+
 	db, err := database.New(generalConf)
 	if err != nil {
+		return err
+	}
+
+	if err := db.InitializeDB(); err != nil {
 		return err
 	}
 

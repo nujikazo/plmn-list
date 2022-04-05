@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/nujikazo/plmn-list/api/config"
-	"github.com/nujikazo/plmn-list/api/database"
+	"github.com/nujikazo/plmn-list/database"
 	"github.com/nujikazo/plmn-list/general"
 	pb "github.com/nujikazo/plmn-list/proto"
 

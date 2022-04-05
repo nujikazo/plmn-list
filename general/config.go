@@ -7,6 +7,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// GeneralConf
 type GeneralConf struct {
 	DatabaseHost     string `yaml:"databaseHost"`
 	DatabaseUser     string `yaml:"databaseUser"`
@@ -17,6 +18,7 @@ type GeneralConf struct {
 	DatabaseType     string `yaml:"databaseType"`
 }
 
+// ReadGeneralConf
 func ReadGeneralConf(path string) *GeneralConf {
 	gc := &GeneralConf{}
 	c, err := os.ReadFile(path)
