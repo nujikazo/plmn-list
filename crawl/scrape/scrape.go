@@ -2,6 +2,7 @@ package scrape
 
 import (
 	"bytes"
+	"context"
 	"io/ioutil"
 	"net/http"
 
@@ -27,8 +28,12 @@ func Run(generalConf *general.GeneralConf, crawlerConf *config.PlmnCrawlConf) ([
 
 	switch env {
 	case "remote":
+		ctx := context.Background()
 		plmnListURL := crawlerConf.Plmn.URL
-		resp, err := http.Get(plmnListURL)
+		req, err := http.NewRequestWithContext(ctx, "GET", plmnListURL, nil)
+		client := http.DefaultClient
+
+		resp, err := client.Do(req)
 		if err != nil {
 			return nil, err
 		}
