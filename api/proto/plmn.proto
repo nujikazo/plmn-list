@@ -1,11 +1,16 @@
 syntax = "proto3";
-
 package plmn;
+option go_package = "github.com/nujikazo/plmn-list/api/proto";
 
-option go_package = "proto/";
+import "google/api/annotations.proto";
 
 service PlmnService {
-  rpc ListPlmn (ListPlmnRequest) returns (ListPlmnsResponses) {}
+  rpc ListPlmn (ListPlmnRequest) returns (ListPlmnsResponses) {
+    option (google.api.http) = {
+      post: "/v1/plmn"
+      body: "*"
+	};
+  }
 }
 
 message ListPlmnRequest {

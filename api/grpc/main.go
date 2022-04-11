@@ -8,9 +8,9 @@ import (
 	"os"
 
 	"github.com/nujikazo/plmn-list/api/config"
+	pb "github.com/nujikazo/plmn-list/api/proto"
 	"github.com/nujikazo/plmn-list/database"
 	"github.com/nujikazo/plmn-list/general"
-	pb "github.com/nujikazo/plmn-list/proto"
 
 	"google.golang.org/grpc"
 )
@@ -56,12 +56,12 @@ func main() {
 
 	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%d", apiConf.ServerAddr, apiConf.ServerPort))
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatal(err)
 	}
+
 	s := grpc.NewServer()
 	pb.RegisterPlmnServiceServer(s, &server{DB: db})
-	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		log.Fatal(err)
 	}
 }

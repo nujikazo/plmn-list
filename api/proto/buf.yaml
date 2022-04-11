@@ -1,0 +1,4 @@
+version: v1
+name: buf.build/nujikazo/plmn-list
+deps:
+  - buf.build/googleapis/googleapis
