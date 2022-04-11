@@ -8,8 +8,10 @@ import (
 )
 
 type APIConf struct {
-	ServerAddr string `yaml:"serverAddr"`
-	ServerPort int    `yaml:"serverPort"`
+	ServerAddr  string `yaml:"serverAddr"`
+	ServerPort  int    `yaml:"serverPort"`
+	GatewayAddr string `yaml:"gatewayAddr"`
+	GatewayPort int    `yaml:"gatewayPort"`
 }
 
 func ReadAPIConf(path string) *APIConf {
