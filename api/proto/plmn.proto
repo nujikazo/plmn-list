@@ -7,8 +7,7 @@ import "google/api/annotations.proto";
 service PlmnService {
   rpc ListPlmn (ListPlmnRequest) returns (ListPlmnsResponses) {
     option (google.api.http) = {
-      post: "/v1/plmn"
-      body: "*"
+      get: "/v1/plmn"
 	};
   }
 }
