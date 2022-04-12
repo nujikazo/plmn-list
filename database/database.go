@@ -67,36 +67,6 @@ func (db *Database) InitializeDB() error {
 	return nil
 }
 
-// GetPlmnList
-func (db *Database) GetPlmnList() ([]Schema, error) {
-	stmt := fmt.Sprintf("SELECT * FROM %s;", general.Table)
-	rows, err := db.Query(stmt)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var list []Schema
-
-	for rows.Next() {
-		var plmn Schema
-		if err := rows.Scan(
-			&plmn.MCC,
-			&plmn.MNC,
-			&plmn.ISO,
-			&plmn.Country,
-			&plmn.CountryCode,
-			&plmn.Network,
-		); err != nil {
-			return nil, err
-		}
-
-		list = append(list, plmn)
-	}
-
-	return list, nil
-}
-
 // Insert
 func (db *Database) Insert() error {
 	tx, err := db.Begin()
@@ -128,6 +98,7 @@ func (db *Database) createBulkInsertQuery(start int) (string, []interface{}) {
 	values := make([]string, n)
 	args := make([]interface{}, n*6)
 	pos := 0
+
 	for i := 0; i < n; i++ {
 		values[i] = "(?, ?, ?, ?, ?, ?)"
 		args[pos] = db.Schemas[i].MCC
@@ -152,4 +123,72 @@ func (db *Database) createBulkInsertQuery(start int) (string, []interface{}) {
 	)
 
 	return query, args
+}
+
+// GetPlmnList
+func (db *Database) GetPlmnList(query map[string]string) ([]Schema, error) {
+	var stmt string
+	var args []interface{}
+	var q string
+
+	if db.checkQuery(query) {
+		q, args = db.buildGetQuery(query)
+
+		stmt = fmt.Sprintf("SELECT * FROM %s %s", general.Table, q)
+	} else {
+		stmt = fmt.Sprintf("SELECT * FROM %s", general.Table)
+	}
+
+	rows, err := db.Query(stmt, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var list []Schema
+
+	for rows.Next() {
+		var plmn Schema
+		if err := rows.Scan(
+			&plmn.MCC,
+			&plmn.MNC,
+			&plmn.ISO,
+			&plmn.Country,
+			&plmn.CountryCode,
+			&plmn.Network,
+		); err != nil {
+			return nil, err
+		}
+
+		list = append(list, plmn)
+	}
+
+	return list, nil
+}
+
+// buildGetQuery
+func (db *Database) buildGetQuery(query map[string]string) (string, []interface{}) {
+	var result []string
+	var args []interface{}
+	for k, v := range query {
+		if v != "" {
+			f := fmt.Sprintf("%s = ?", k)
+			result = append(result, f)
+			args = append(args, v)
+		}
+	}
+
+	return fmt.Sprintf("WHERE %s;", strings.Join(result, " AND ")), args
+}
+
+// checkQuery
+func (db *Database) checkQuery(query map[string]string) bool {
+	var check = false
+	for _, v := range query {
+		if v != "" {
+			check = true
+		}
+	}
+
+	return check
 }
