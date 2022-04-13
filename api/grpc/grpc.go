@@ -22,15 +22,21 @@ type server struct {
 
 // ListPlmn
 func (s *server) ListPlmn(ctx context.Context, in *pb.ListPlmnRequest) (*pb.ListPlmnsResponses, error) {
-	var q = map[string]string{"mcc": in.GetMcc(),
-		"mnc":          in.GetMnc(),
-		"iso":          in.GetIso(),
-		"country":      in.GetCountry(),
-		"country_code": in.GetCountryCode(),
-		"network":      in.GetNetwork(),
+	var query map[string]string
+
+	if in != nil {
+		query = map[string]string{
+			general.Mcc:         in.GetMcc(),
+			general.Mnc:         in.GetMnc(),
+			general.Iso:         in.GetIso(),
+			general.Country:     in.GetCountry(),
+			general.CountryCode: in.GetCountryCode(),
+			general.Network:     in.GetNetwork(),
+		}
+
 	}
 
-	result, err := s.DB.GetPlmnList(q)
+	result, err := s.DB.GetPlmnList(query)
 	if err != nil {
 		return nil, err
 	}

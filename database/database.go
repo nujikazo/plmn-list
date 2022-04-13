@@ -127,16 +127,14 @@ func (db *Database) createBulkInsertQuery(start int) (string, []interface{}) {
 
 // GetPlmnList
 func (db *Database) GetPlmnList(query map[string]string) ([]Schema, error) {
-	var stmt string
 	var args []interface{}
-	var q string
+	var values string
+	var list []Schema
+	stmt := fmt.Sprintf("SELECT * FROM %s", general.Table)
 
 	if db.checkQuery(query) {
-		q, args = db.buildGetQuery(query)
-
-		stmt = fmt.Sprintf("SELECT * FROM %s %s", general.Table, q)
-	} else {
-		stmt = fmt.Sprintf("SELECT * FROM %s", general.Table)
+		values, args = db.buildGetQuery(query)
+		stmt = fmt.Sprintf("%s %s", stmt, values)
 	}
 
 	rows, err := db.Query(stmt, args...)
@@ -144,8 +142,6 @@ func (db *Database) GetPlmnList(query map[string]string) ([]Schema, error) {
 		return nil, err
 	}
 	defer rows.Close()
-
-	var list []Schema
 
 	for rows.Next() {
 		var plmn Schema
@@ -170,10 +166,11 @@ func (db *Database) GetPlmnList(query map[string]string) ([]Schema, error) {
 func (db *Database) buildGetQuery(query map[string]string) (string, []interface{}) {
 	var result []string
 	var args []interface{}
+
 	for k, v := range query {
 		if v != "" {
-			f := fmt.Sprintf("%s = ?", k)
-			result = append(result, f)
+			values := fmt.Sprintf("%s = ?", k)
+			result = append(result, values)
 			args = append(args, v)
 		}
 	}
