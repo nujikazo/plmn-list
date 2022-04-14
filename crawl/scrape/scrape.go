@@ -5,6 +5,7 @@ import (
 	"context"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/antchfx/htmlquery"
 	"github.com/nujikazo/plmn-list/crawl/config"
@@ -65,7 +66,7 @@ func Run(generalConf *general.GeneralConf, crawlerConf *config.PlmnCrawlConf) ([
 		iso := htmlquery.InnerText(td[2])
 		country := htmlquery.InnerText(td[3])
 		countryCode := htmlquery.InnerText(td[4])
-		network := htmlquery.InnerText(td[5])
+		network := strings.TrimRight(htmlquery.InnerText(td[5]), " ")
 
 		p := Plmn{
 			MCC:         mcc,
