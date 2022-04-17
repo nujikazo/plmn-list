@@ -3,6 +3,7 @@ package scrape
 import (
 	"bytes"
 	"context"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -49,6 +50,8 @@ func Run(generalConf *general.GeneralConf, crawlerConf *config.PlmnCrawlConf) ([
 		if err != nil {
 			return nil, err
 		}
+	default:
+		return nil, errors.New("Environment must be set to 'local' or 'remote")
 	}
 
 	doc, err := htmlquery.Parse(bytes.NewReader(res))
