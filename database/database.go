@@ -132,10 +132,12 @@ func (db *Database) GetPlmnList(query map[string]string) ([]Schema, error) {
 	var list []Schema
 	stmt := fmt.Sprintf("SELECT * FROM %s", general.Table)
 
-	if db.checkQuery(query) {
+	if len(query) > 0 {
 		values, args = db.buildGetQuery(query)
 		stmt = fmt.Sprintf("%s %s", stmt, values)
 	}
+
+	stmt = fmt.Sprintf("%s;", stmt)
 
 	rows, err := db.Query(stmt, args...)
 	if err != nil {
@@ -168,24 +170,10 @@ func (db *Database) buildGetQuery(query map[string]string) (string, []interface{
 	var args []interface{}
 
 	for k, v := range query {
-		if v != "" {
-			values := fmt.Sprintf("%s = ?", k)
-			result = append(result, values)
-			args = append(args, v)
-		}
+		values := fmt.Sprintf("%s = ?", k)
+		result = append(result, values)
+		args = append(args, v)
 	}
 
-	return fmt.Sprintf("WHERE %s;", strings.Join(result, " AND ")), args
-}
-
-// checkQuery
-func (db *Database) checkQuery(query map[string]string) bool {
-	var check = false
-	for _, v := range query {
-		if v != "" {
-			check = true
-		}
-	}
-
-	return check
+	return fmt.Sprintf("WHERE %s", strings.Join(result, " AND ")), args
 }
