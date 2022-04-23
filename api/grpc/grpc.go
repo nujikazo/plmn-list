@@ -51,13 +51,20 @@ func (s *server) ListPlmn(ctx context.Context, in *pb.ListPlmnRequest) (*pb.List
 		}
 	}
 
-	result, err := s.DB.GetPlmnList(query)
-	if err != nil {
+	if err := s.DB.GetPlmnList(query); err != nil {
 		return nil, err
 	}
 
-	var list []*pb.Plmn
-	for _, v := range result {
+	list := s.toPbResponse()
+
+	return &pb.ListPlmnsResponses{
+		Plmn: list,
+	}, nil
+}
+
+func (s *server) toPbResponse() []*pb.Plmn {
+	var list = make([]*pb.Plmn, len(s.DB.Result))
+	for _, v := range s.DB.Result {
 		var plmn pb.Plmn
 
 		plmn.Mcc = v.MCC
@@ -69,9 +76,8 @@ func (s *server) ListPlmn(ctx context.Context, in *pb.ListPlmnRequest) (*pb.List
 
 		list = append(list, &plmn)
 	}
-	return &pb.ListPlmnsResponses{
-		Plmn: list,
-	}, nil
+
+	return list
 }
 
 func main() {

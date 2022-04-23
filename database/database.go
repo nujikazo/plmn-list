@@ -12,8 +12,8 @@ import (
 
 type Database struct {
 	*sql.DB
-	Schemas []Schema
-	Name    string
+	Result []Schema
+	Name   string
 }
 
 type Schema struct {
@@ -94,19 +94,19 @@ func (db *Database) Insert() error {
 
 // createBulkInsertQuery
 func (db *Database) createBulkInsertQuery(start int) (string, []interface{}) {
-	n := len(db.Schemas)
+	n := len(db.Result)
 	values := make([]string, n)
 	args := make([]interface{}, n*6)
 	pos := 0
 
 	for i := 0; i < n; i++ {
 		values[i] = "(?, ?, ?, ?, ?, ?)"
-		args[pos] = db.Schemas[i].MCC
-		args[pos+1] = db.Schemas[i].MNC
-		args[pos+2] = db.Schemas[i].ISO
-		args[pos+3] = db.Schemas[i].Country
-		args[pos+4] = db.Schemas[i].CountryCode
-		args[pos+5] = db.Schemas[i].Network
+		args[pos] = db.Result[i].MCC
+		args[pos+1] = db.Result[i].MNC
+		args[pos+2] = db.Result[i].ISO
+		args[pos+3] = db.Result[i].Country
+		args[pos+4] = db.Result[i].CountryCode
+		args[pos+5] = db.Result[i].Network
 		pos += 6
 	}
 
@@ -126,10 +126,9 @@ func (db *Database) createBulkInsertQuery(start int) (string, []interface{}) {
 }
 
 // GetPlmnList
-func (db *Database) GetPlmnList(query map[string]string) ([]Schema, error) {
-	var args []interface{}
+func (db *Database) GetPlmnList(query map[string]string) error {
+	args := make([]interface{}, len(query))
 	var values string
-	var list []Schema
 	stmt := fmt.Sprintf("SELECT * FROM %s", general.Table)
 
 	if len(query) > 0 {
@@ -141,7 +140,7 @@ func (db *Database) GetPlmnList(query map[string]string) ([]Schema, error) {
 
 	rows, err := db.Query(stmt, args...)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer rows.Close()
 
@@ -155,13 +154,13 @@ func (db *Database) GetPlmnList(query map[string]string) ([]Schema, error) {
 			&plmn.CountryCode,
 			&plmn.Network,
 		); err != nil {
-			return nil, err
+			return err
 		}
 
-		list = append(list, plmn)
+		db.Result = append(db.Result, plmn)
 	}
 
-	return list, nil
+	return nil
 }
 
 // buildGetQuery
