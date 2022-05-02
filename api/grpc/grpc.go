@@ -7,8 +7,9 @@ import (
 	"net"
 	"os"
 
-	"github.com/nujikazo/plmn-list/api/config"
+	ac "github.com/nujikazo/plmn-list/api/config"
 	pb "github.com/nujikazo/plmn-list/api/proto/gen/go"
+	"github.com/nujikazo/plmn-list/config"
 	"github.com/nujikazo/plmn-list/database"
 	"github.com/nujikazo/plmn-list/general"
 
@@ -81,8 +82,8 @@ func (s *server) toPbResponse() []*pb.Plmn {
 }
 
 func main() {
-	generalConf := general.ReadGeneralConf(os.Getenv("GENERAL_CONF"))
-	apiConf := config.ReadAPIConf(os.Getenv("API_CONF"))
+	generalConf := config.New(os.Getenv("GENERAL_CONF"))
+	apiConf := ac.New(os.Getenv("API_CONF"))
 
 	db, err := database.New(generalConf)
 	if err != nil {

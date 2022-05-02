@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/nujikazo/plmn-list/config"
 	"github.com/nujikazo/plmn-list/general"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -26,7 +27,7 @@ type Schema struct {
 }
 
 // New
-func New(conf *general.GeneralConf) (*Database, error) {
+func New(conf *config.GeneralConf) (*Database, error) {
 	target := fmt.Sprintf("%s", conf.DatabaseName)
 
 	db, err := sql.Open(conf.DatabaseType, target)

@@ -7,8 +7,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type PlmnCrawlConf struct {
-	Plmn struct {
+type CrawlConf struct {
+	Plmn []struct {
 		Env       string `yaml:"env"`
 		URL       string `yaml:"url"`
 		LocalFile string `yaml:"localFile"`
@@ -19,8 +19,8 @@ type PlmnCrawlConf struct {
 	} `yaml:"plmn"`
 }
 
-func ReadPlmnCrawlConf(path string) *PlmnCrawlConf {
-	pc := &PlmnCrawlConf{}
+func New(path string) *CrawlConf {
+	pc := &CrawlConf{}
 	c, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)

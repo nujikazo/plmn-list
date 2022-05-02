@@ -14,16 +14,16 @@ type APIConf struct {
 	GatewayPort int    `yaml:"gatewayPort"`
 }
 
-func ReadAPIConf(path string) *APIConf {
-	gc := &APIConf{}
+func New(path string) *APIConf {
+	ac := &APIConf{}
 	c, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err := yaml.Unmarshal(c, gc); err != nil {
+	if err := yaml.Unmarshal(c, ac); err != nil {
 		log.Fatal(err)
 	}
 
-	return gc
+	return ac
 }

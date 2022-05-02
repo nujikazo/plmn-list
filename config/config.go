@@ -1,4 +1,4 @@
-package general
+package config
 
 import (
 	"log"
@@ -18,8 +18,8 @@ type GeneralConf struct {
 	DatabaseType     string `yaml:"databaseType"`
 }
 
-// ReadGeneralConf
-func ReadGeneralConf(path string) *GeneralConf {
+// ReadConf
+func New(path string) *GeneralConf {
 	gc := &GeneralConf{}
 	c, err := os.ReadFile(path)
 	if err != nil {

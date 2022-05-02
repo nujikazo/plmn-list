@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	apiConf := config.ReadAPIConf(os.Getenv("API_CONF"))
+	apiConf := config.New(os.Getenv("API_CONF"))
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
