@@ -13,7 +13,7 @@ import (
 
 type Database struct {
 	*sql.DB
-	Result []Schema
+	Result []*Schema
 	Name   string
 }
 
@@ -39,7 +39,7 @@ func New(conf *config.GeneralConf) (*Database, error) {
 		return nil, err
 	}
 
-	var schema []Schema
+	var schema []*Schema
 	return &Database{
 		db,
 		schema,
@@ -158,7 +158,7 @@ func (db *Database) GetPlmnList(query map[string]string) error {
 			return err
 		}
 
-		db.Result = append(db.Result, plmn)
+		db.Result = append(db.Result, &plmn)
 	}
 
 	return nil

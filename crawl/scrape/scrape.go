@@ -11,6 +11,7 @@ import (
 	"github.com/antchfx/htmlquery"
 	"github.com/nujikazo/plmn-list/config"
 	cg "github.com/nujikazo/plmn-list/crawl/config"
+	"github.com/nujikazo/plmn-list/database"
 )
 
 type Plmn struct {
@@ -23,8 +24,8 @@ type Plmn struct {
 }
 
 // Run
-func Run(generalConf *config.GeneralConf, crawlerConf *cg.CrawlConf) ([]Plmn, error) {
-	var list []Plmn
+func Run(generalConf *config.GeneralConf, crawlerConf *cg.CrawlConf) ([]*database.Schema, error) {
+	var list []*database.Schema
 
 	for _, v := range crawlerConf.Plmn {
 		env := v.Env
@@ -73,7 +74,7 @@ func Run(generalConf *config.GeneralConf, crawlerConf *cg.CrawlConf) ([]Plmn, er
 			countryCode := htmlquery.InnerText(td[4])
 			network := strings.TrimRight(htmlquery.InnerText(td[5]), " ")
 
-			p := Plmn{
+			p := &database.Schema{
 				MCC:         mcc,
 				MNC:         mnc,
 				ISO:         iso,

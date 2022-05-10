@@ -40,14 +40,9 @@ func run(generalConf *config.GeneralConf, crawlerConf *cg.CrawlConf) error {
 		return err
 	}
 
-	db.Result = make([]database.Schema, len(list))
+	db.Result = make([]*database.Schema, len(list))
 	for i, v := range list {
-		db.Result[i].MCC = v.MCC
-		db.Result[i].MNC = v.MNC
-		db.Result[i].ISO = v.ISO
-		db.Result[i].Country = v.Country
-		db.Result[i].CountryCode = v.CountryCode
-		db.Result[i].Network = v.Network
+		db.Result[i] = v
 	}
 
 	if err := db.Insert(); err != nil {
