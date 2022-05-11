@@ -35,8 +35,8 @@ func run(generalConf *config.GeneralConf, crawlerConf *cg.CrawlConf) error {
 		return err
 	}
 
-	list, err := scrape.Run(generalConf, crawlerConf)
-	if err != nil {
+	var list []*database.Schema
+	if err := scrape.Run(generalConf, crawlerConf, &list); err != nil {
 		return err
 	}
 

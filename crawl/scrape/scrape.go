@@ -24,8 +24,7 @@ type Plmn struct {
 }
 
 // Run
-func Run(generalConf *config.GeneralConf, crawlerConf *cg.CrawlConf) ([]*database.Schema, error) {
-	var list []*database.Schema
+func Run(generalConf *config.GeneralConf, crawlerConf *cg.CrawlConf, list *[]*database.Schema) error {
 
 	for _, v := range crawlerConf.Plmn {
 		env := v.Env
@@ -41,26 +40,26 @@ func Run(generalConf *config.GeneralConf, crawlerConf *cg.CrawlConf) ([]*databas
 
 			resp, err := client.Do(req)
 			if err != nil {
-				return nil, err
+				return err
 			}
 			defer resp.Body.Close()
 
 			res, err = ioutil.ReadAll(resp.Body)
 			if err != nil {
-				return nil, err
+				return err
 			}
 		case "local":
 			res, err = ioutil.ReadFile(v.LocalFile)
 			if err != nil {
-				return nil, err
+				return err
 			}
 		default:
-			return nil, errors.New("Environment must be set to 'local' or 'remote")
+			return errors.New("Environment must be set to 'local' or 'remote")
 		}
 
 		doc, err := htmlquery.Parse(bytes.NewReader(res))
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		tr := htmlquery.Find(doc, v.Path.Tr)
@@ -83,10 +82,10 @@ func Run(generalConf *config.GeneralConf, crawlerConf *cg.CrawlConf) ([]*databas
 				Network:     network,
 			}
 
-			list = append(list, p)
+			*list = append(*list, p)
 
 		}
 	}
 
-	return list, nil
+	return nil
 }
