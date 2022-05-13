@@ -15,19 +15,19 @@ service PlmnService {
 message ListPlmnRequest {
   string mcc = 1;
   string mnc = 2;
-  string iso = 3;
-  string country = 4;
-  string country_code = 5;
-  string network = 6;
+  string brand = 3;
+  string operator = 4;
+  string status = 5;
+  string bands = 6;
 }
 
 message Plmn {
   string mcc = 1;
   string mnc = 2;
-  string iso = 3;
-  string country = 4;
-  string country_code = 5;
-  string network = 6;
+  string brand = 3;
+  string operator = 4;
+  string status = 5;
+  string bands = 6;
 }
 
 message ListPlmnsResponses {

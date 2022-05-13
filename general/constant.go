@@ -1,11 +1,11 @@
 package general
 
 const (
-	Table       = "plmn"
-	Mcc         = "mcc"
-	Mnc         = "mnc"
-	Iso         = "iso"
-	Country     = "country"
-	CountryCode = "country_code"
-	Network     = "network"
+	Table    = "plmn"
+	Mcc      = "mcc"
+	Mnc      = "mnc"
+	Brand    = "brand"
+	Operator = "operator"
+	Status   = "status"
+	Bands    = "bands"
 )

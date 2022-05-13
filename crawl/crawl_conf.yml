@@ -1,7 +1,37 @@
 plmn:
   - env: 'remote'
-    url: 'https://www.mcc-mnc.com/'
+    url: 'https://en.wikipedia.org/wiki/Mobile_network_codes_in_ITU_region_2xx_(Europe)'
     localFile: 'testdata/plmn.html'
     path:
-      tr: '//div[@id="main"]/div[@class="content"]/table[@id="mncmccTable"]/tbody/tr'
+      tr: '//tbody/tr'
+      td: '//td'
+  - env: 'remote'
+    url: 'https://en.wikipedia.org/wiki/Mobile_network_codes_in_ITU_region_3xx_(North_America)'
+    localFile: 'testdata/plmn.html'
+    path:
+      tr: '//tbody/tr'
+      td: '//td'
+  - env: 'remote'
+    url: 'https://en.wikipedia.org/wiki/Mobile_network_codes_in_ITU_region_4xx_(Asia)'
+    localFile: 'testdata/plmn.html'
+    path:
+      tr: '//tbody/tr'
+      td: '//td'
+  - env: 'remote'
+    url: 'https://en.wikipedia.org/wiki/Mobile_network_codes_in_ITU_region_5xx_(Oceania)'
+    localFile: 'testdata/plmn.html'
+    path:
+      tr: '//tbody/tr'
+      td: '//td'
+  - env: 'remote'
+    url: 'https://en.wikipedia.org/wiki/Mobile_network_codes_in_ITU_region_6xx_(Africa)'
+    localFile: 'testdata/plmn.html'
+    path:
+      tr: '//tbody/tr'
+      td: '//td'
+  - env: 'remote'
+    url: 'https://en.wikipedia.org/wiki/Mobile_network_codes_in_ITU_region_7xx_(South_America)'
+    localFile: 'testdata/plmn.html'
+    path:
+      tr: '//tbody/tr'
       td: '//td'

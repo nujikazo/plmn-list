@@ -18,12 +18,12 @@ type Database struct {
 }
 
 type Schema struct {
-	MCC         string
-	MNC         string
-	ISO         string
-	Country     string
-	CountryCode string
-	Network     string
+	MCC      string
+	MNC      string
+	Brand    string
+	Operator string
+	Status   string
+	Bands    string
 }
 
 // New
@@ -53,10 +53,10 @@ func (db *Database) InitializeDB() error {
 		general.Table,
 		general.Mcc,
 		general.Mnc,
-		general.Iso,
-		general.Country,
-		general.CountryCode,
-		general.Network,
+		general.Brand,
+		general.Operator,
+		general.Status,
+		general.Bands,
 		general.Table,
 	)
 
@@ -104,10 +104,10 @@ func (db *Database) createBulkInsertQuery(start int) (string, []interface{}) {
 		values[i] = "(?, ?, ?, ?, ?, ?)"
 		args[pos] = db.Result[i].MCC
 		args[pos+1] = db.Result[i].MNC
-		args[pos+2] = db.Result[i].ISO
-		args[pos+3] = db.Result[i].Country
-		args[pos+4] = db.Result[i].CountryCode
-		args[pos+5] = db.Result[i].Network
+		args[pos+2] = db.Result[i].Brand
+		args[pos+3] = db.Result[i].Operator
+		args[pos+4] = db.Result[i].Status
+		args[pos+5] = db.Result[i].Bands
 		pos += 6
 	}
 
@@ -116,10 +116,10 @@ func (db *Database) createBulkInsertQuery(start int) (string, []interface{}) {
 		general.Table,
 		general.Mcc,
 		general.Mnc,
-		general.Iso,
-		general.Country,
-		general.CountryCode,
-		general.Network,
+		general.Brand,
+		general.Operator,
+		general.Status,
+		general.Bands,
 		strings.Join(values, ", "),
 	)
 
@@ -150,10 +150,10 @@ func (db *Database) GetPlmnList(query map[string]string) error {
 		if err := rows.Scan(
 			&plmn.MCC,
 			&plmn.MNC,
-			&plmn.ISO,
-			&plmn.Country,
-			&plmn.CountryCode,
-			&plmn.Network,
+			&plmn.Brand,
+			&plmn.Operator,
+			&plmn.Status,
+			&plmn.Bands,
 		); err != nil {
 			return err
 		}

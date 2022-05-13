@@ -6,7 +6,6 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
-	"strings"
 
 	"github.com/antchfx/htmlquery"
 	"github.com/nujikazo/plmn-list/config"
@@ -63,27 +62,27 @@ func Run(generalConf *config.GeneralConf, crawlerConf *cg.CrawlConf, list *[]*da
 		}
 
 		tr := htmlquery.Find(doc, v.Path.Tr)
-
 		for _, t := range tr {
 			td := htmlquery.Find(t, v.Path.Td)
-			mcc := htmlquery.InnerText(td[0])
-			mnc := htmlquery.InnerText(td[1])
-			iso := htmlquery.InnerText(td[2])
-			country := htmlquery.InnerText(td[3])
-			countryCode := htmlquery.InnerText(td[4])
-			network := strings.TrimRight(htmlquery.InnerText(td[5]), " ")
+			if len(td) >= 6 {
+				mcc := htmlquery.InnerText(td[0])
+				mnc := htmlquery.InnerText(td[1])
+				brand := htmlquery.InnerText(td[2])
+				operator := htmlquery.InnerText(td[3])
+				status := htmlquery.InnerText(td[4])
+				bands := htmlquery.InnerText(td[5])
 
-			p := &database.Schema{
-				MCC:         mcc,
-				MNC:         mnc,
-				ISO:         iso,
-				Country:     country,
-				CountryCode: countryCode,
-				Network:     network,
+				p := &database.Schema{
+					MCC:      mcc,
+					MNC:      mnc,
+					Brand:    brand,
+					Operator: operator,
+					Status:   status,
+					Bands:    bands,
+				}
+
+				*list = append(*list, p)
 			}
-
-			*list = append(*list, p)
-
 		}
 	}
 

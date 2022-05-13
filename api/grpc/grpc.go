@@ -35,20 +35,20 @@ func (s *server) ListPlmn(ctx context.Context, in *pb.ListPlmnRequest) (*pb.List
 			query[general.Mnc] = mnc
 		}
 
-		if iso := in.GetIso(); iso != "" {
-			query[general.Iso] = iso
+		if brand := in.GetBrand(); brand != "" {
+			query[general.Brand] = brand
 		}
 
-		if country := in.GetCountry(); country != "" {
-			query[general.Country] = country
+		if operator := in.GetOperator(); operator != "" {
+			query[general.Operator] = operator
 		}
 
-		if countryCode := in.GetCountryCode(); countryCode != "" {
-			query[general.CountryCode] = countryCode
+		if status := in.GetStatus(); status != "" {
+			query[general.Status] = status
 		}
 
-		if network := in.GetNetwork(); network != "" {
-			query[general.Network] = network
+		if bands := in.GetBands(); bands != "" {
+			query[general.Bands] = bands
 		}
 	}
 
@@ -70,10 +70,10 @@ func (s *server) toPbResponse() []*pb.Plmn {
 
 		plmn.Mcc = v.MCC
 		plmn.Mnc = v.MNC
-		plmn.Iso = v.ISO
-		plmn.Country = v.Country
-		plmn.CountryCode = v.CountryCode
-		plmn.Network = v.Network
+		plmn.Brand = v.Brand
+		plmn.Operator = v.Operator
+		plmn.Status = v.Status
+		plmn.Bands = v.Bands
 
 		list = append(list, &plmn)
 	}
